@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Event & Find Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #8b5cf6;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border-color: #334155;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: var(--gradient);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn {
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-color);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .event-card {
+            background: var(--dark-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: var(--gradient);
+        }
+
+        .event-content {
+            padding: 1.5rem;
+        }
+
+        .event-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .event-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .event-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .pending-list {
+            list-style: none;
+        }
+
+        .pending-item {
+            background: var(--dark-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .badge-primary {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-color);
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-color);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning-color);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1rem;
+            background: var(--dark-bg);
+            border: 1px dashed var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-label:hover {
+            border-color: var(--primary-color);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .dashboard-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .dashboard-tab {
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .dashboard-tab:hover {
+            color: var(--primary-color);
+        }
+
+        .dashboard-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .navbar h1 {
+                font-size: 1.25rem;
+            }
+
+            .container {
+                padding: 0 0.5rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .event-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-tabs {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1><i class="fas fa-graduation-cap"></i> Campus Event & Find Hub</h1>
+        <button id="logoutBtn" class="btn btn-danger hidden">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </nav>
+
+    <div class="container">
+        <!-- LOGIN SECTION -->
+        <div id="loginSection" class="card">
+            <div class="tabs">
+                <div class="tab active" data-role="admin">
+                    <i class="fas fa-user-shield"></i> Admin Login
+                </div>
+                <div class="tab" data-role="student">
+                    <i class="fas fa-user-graduate"></i> Student Login
+                </div>
+            </div>
+
+            <div id="alertBox" class="hidden"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="email" class="form-control" required placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" class="form-control" required placeholder="Enter your password">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <button id="forgotBtn" class="btn btn-secondary btn-full">
+                    <i class="fas fa-key"></i> Forgot Password?
+                </button>
+                <button id="registerBtn" class="btn btn-secondary btn-full">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+            </div>
+        </div>
+
+        <!-- ADMIN DASHBOARD -->
+        <div id="adminDashboard" class="hidden">
+            <div class="dashboard-tabs">
+                <button class="dashboard-tab active" data-tab="pending">
+                    <i class="fas fa-user-clock"></i> Pending Approvals
+                </button>
+                <button class="dashboard-tab" data-tab="upload">
+                    <i class="fas fa-calendar-plus"></i> Upload Event
+                </button>
+                <button class="dashboard-tab" data-tab="events">
+                    <i class="fas fa-calendar-alt"></i> All Events
+                </button>
+            </div>
+
+            <!-- Pending Approvals -->
+            <div id="pendingSection" class="card">
+                <h3><i class="fas fa-user-clock"></i> Pending Student Approvals</h3>
+                <ul id="pendingList" class="pending-list"></ul>
+            </div>
+
+            <!-- Upload Event -->
+            <div id="uploadEventSection" class="card hidden">
+                <h3><i class="fas fa-calendar-plus"></i> Upload New Event</h3>
+                <form id="eventUploadForm">
+                    <div class="form-group">
+                        <label for="eventTitle"><i class="fas fa-heading"></i> Event Title</label>
+                        <input type="text" id="eventTitle" class="form-control" required placeholder="Enter event title">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventDescription"><i class="fas fa-align-left"></i> Description</label>
+                        <textarea id="eventDescription" class="form-control" rows="4" required placeholder="Enter event description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-image"></i> Event Photo</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="eventPhoto" accept="image/*">
+                            <label for="eventPhoto" class="file-input-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Choose an image</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-upload"></i> Upload Event
+                    </button>
+                </form>
+            </div>
+
+            <!-- Admin Events View -->
+            <div id="adminEventsSection" class="card hidden">
+                <h3><i class="fas fa-calendar-alt"></i> All Events</h3>
+                <div id="adminEventsList" class="event-grid"></div>
+            </div>
+        </div>
+
+        <!-- STUDENT DASHBOARD -->
+        <div id="studentDashboard" class="hidden">
+            <div class="dashboard-tabs">
+                <button class="dashboard-tab active" data-tab="events">
+                    <i class="fas fa-calendar-alt"></i> Campus Events
+                </button>
+                <button class="dashboard-tab" data-tab="lost">
+                    <i class="fas fa-search"></i> Lost Items
+                </button>
+                <button class="dashboard-tab" data-tab="found">
+                    <i class="fas fa-check-circle"></i> Found Items
+                </button>
+                <button class="dashboard-tab" data-tab="upload">
+                    <i class="fas fa-plus-circle"></i> Report Item
+                </button>
+            </div>
+
+            <!-- Events Section -->
+            <div id="eventsSection" class="card">
+                <h3><i class="fas fa-calendar-alt"></i> Campus Events</h3>
+                <div id="eventsList" class="event-grid"></div>
+            </div>
+
+            <!-- Lost Items -->
+            <div id="lostItemsSection" class="card hidden">
+                <h3><i class="fas fa-search"></i> Lost Items</h3>
+                <div id="lostItemsList" class="event-grid"></div>
+            </div>
+
+            <!-- Found Items -->
+            <div id="foundItemsSection" class="card hidden">
+                <h3><i class="fas fa-check-circle"></i> Found Items</h3>
+                <div id="foundItemsList" class="event-grid"></div>
+            </div>
+
+            <!-- Upload Lost/Found -->
+            <div id="uploadItemSection" class="card hidden">
+                <h3><i class="fas fa-plus-circle"></i> Report Lost/Found Item</h3>
+                <form id="itemUploadForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-tags"></i> Item Type</label>
+                        <select id="itemType" class="form-control" required>
+                            <option value="">Select Type</option>
+                            <option value="lost">Lost</option>
+                            <option value="found">Found</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="itemName"><i class="fas fa-tag"></i> Item Name</label>
+                        <input type="text" id="itemName" class="form-control" required placeholder="e.g., Blue Water Bottle">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="itemDescription"><i class="fas fa-align-left"></i> Description</label>
+                        <textarea id="itemDescription" class="form-control" rows="4" required placeholder="Describe the item in detail"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-image"></i> Item Photo</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="itemPhoto" accept="image/*">
+                            <label for="itemPhoto" class="file-input-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Choose an image</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-upload"></i> Submit Report
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISTER MODAL -->
+    <div id="registerModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> Student Registration</h3>
+            </div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regEmail"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="regEmail" class="form-control" required placeholder="Enter your college email">
+                </div>
+
+                <div class="form-group">
+                    <label for="regPassword"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="regPassword" class="form-control" required placeholder="Create a password">
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-check"></i> Register
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-full" onclick="closeModal('registerModal')">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FORGOT PASSWORD MODAL -->
+    <div id="forgotModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Reset Password</h3>
+            </div>
+            <div id="otpStep1">
+                <div class="form-group">
+                    <label for="forgotEmail"><i class="fas fa-envelope"></i> Enter Your Email</label>
+                    <input type="email" id="forgotEmail" class="form-control" required placeholder="Enter registered email">
+                </div>
+                <button class="btn btn-primary btn-full" onclick="sendOTP()">
+                    <i class="fas fa-paper-plane"></i> Send OTP
+                </button>
+            </div>
+
+            <div id="otpStep2" class="hidden">
+                <div class="form-group">
+                    <label for="otpCode"><i class="fas fa-shield-alt"></i> Enter OTP</label>
+                    <input type="text" id="otpCode" class="form-control" required placeholder="Enter 6-digit OTP">
+                </div>
+
+                <div class="form-group">
+                    <label for="newPassword"><i class="fas fa-lock"></i> New Password</label>
+                    <input type="password" id="newPassword" class="form-control" required placeholder="Enter new password">
+                </div>
+
+                <button class="btn btn-primary btn-full" onclick="resetPassword()">
+                    <i class="fas fa-check"></i> Reset Password
+                </button>
+            </div>
+
+            <button class="btn btn-secondary btn-full" style="margin-top: 1rem;" onclick="closeModal('forgotModal')">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
