@@ -16,10 +16,12 @@ const cors = require("cors");
 // ---------- CONFIG ----------
 const PORT = Number(process.env.PORT || 4000);
 const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey_change";
-const UPLOAD_DIR = path.join(__dirname, "uploads");
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, "data");
+const UPLOAD_DIR = path.join(DATA_DIR, "uploads");
 const OTP_EXPIRY_SECONDS = parseInt(process.env.OTP_EXPIRY_SECONDS || "900", 10);
 
-// ensure uploads folder exists
+// ensure data and uploads folders exist
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
 // ---------- MULTER CONFIG ----------
@@ -46,14 +48,19 @@ const transporter = nodemailer.createTransport({
 // ---------- APP ----------
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.CORS_ORIGIN || '*'
+    : '*',
+  credentials: true
+}));
 app.use("/uploads", express.static(UPLOAD_DIR));
 
 // Serve frontend
 app.use(express.static(path.join(__dirname, "public")));
 
 // ---------- DB ----------
-const DB_PATH = path.join(__dirname, "db.sqlite");
+const DB_PATH = path.join(DATA_DIR, "db.sqlite");
 const db = new sqlite3.Database(DB_PATH, (err) => {
   if (err) console.error("SQLite error:", err);
   else console.log("SQLite connected:", DB_PATH);

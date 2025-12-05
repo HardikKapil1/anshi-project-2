@@ -1,5 +1,6 @@
 // app.js - Frontend JavaScript
-const API_URL = 'http://localhost:4000/api';
+// Point API to the same origin as the served frontend (works locally and after deploy)
+const API_URL = `${window.location.origin}/api`;
 let authToken = null;
 let currentRole = 'admin';
 
